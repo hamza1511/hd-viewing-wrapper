@@ -1,45 +1,69 @@
-<script>
-  // Fallback (homepage viewing room)
-  const DEFAULT_EMBED = "https://airtable.com/embed/appd2uoTfbeo9v1IU/shrGj2FnVG7XsgZ7XsgZ7X";
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>H.D Galerie — Viewing Room</title>
+  <style>
+    html, body { height: 100%; margin: 0; background: #fff; }
+    iframe { width: 100%; height: 100%; border: 0; display: block; }
+  </style>
+</head>
 
-  function getSlug() {
-    // 1) If coming from 404.html redirect: ?path=slug
-    const params = new URLSearchParams(window.location.search);
-    const pathParam = params.get("path");
-    if (pathParam) return decodeURIComponent(pathParam).trim().toLowerCase();
+<body>
+  <iframe id="vr" allowfullscreen></iframe>
 
-    // 2) Normal route: /slug
-    return window.location.pathname.replace(/^\/+|\/+$/g, "").trim().toLowerCase();
-  }
+  <script>
+    // Fallback (homepage viewing room)
+    const DEFAULT_EMBED = "https://airtable.com/embed/appd2u0Tfbeo9v1IU/shrGj2FnVG7XsgZ7X";
 
-  async function load() {
-    const params = new URLSearchParams(window.location.search);
-    const embedParam = params.get("embed");
-    const iframe = document.getElementById("vr");
+    function getSlug() {
+      const params = new URLSearchParams(window.location.search);
 
-    // If explicit embed is provided, always use it
-    if (embedParam) {
-      iframe.src = decodeURIComponent(embedParam);
-      return;
+      // 1) If coming from 404.html redirect: ?path=slug
+      const pathParam = params.get("path");
+      if (pathParam) return decodeURIComponent(pathParam).trim().toLowerCase();
+
+      // 2) Normal route: /slug
+      const p = window.location.pathname.replace(/^\/+|\/+$/g, "");
+      return (p || "").trim().toLowerCase();
     }
 
-    const slug = getSlug();
+    async function load() {
+      const params = new URLSearchParams(window.location.search);
+      const embedParam = params.get("embed");
+      const iframe = document.getElementById("vr");
 
-    // No slug -> default
-    if (!slug) {
-      iframe.src = DEFAULT_EMBED;
-      return;
+      // sécurité : si l'iframe n'existe pas, on stop
+      if (!iframe) return;
+
+      // A) mode embed direct (ancien système)
+      if (embedParam) {
+        iframe.src = decodeURIComponent(embedParam);
+        return;
+      }
+
+      // B) mode slug
+      const slug = getSlug();
+
+      // Si pas de slug => homepage
+      if (!slug) {
+        iframe.src = DEFAULT_EMBED;
+        return;
+      }
+
+      try {
+        const r = await fetch(`/api/resolve?slug=${encodeURIComponent(slug)}`, { cache: "no-store" });
+        if (!r.ok) throw new Error("Not found");
+        const data = await r.json();
+        iframe.src = data.embed || DEFAULT_EMBED;
+      } catch (e) {
+        iframe.src = DEFAULT_EMBED;
+      }
     }
 
-    try {
-      const r = await fetch(`/api/resolve?slug=${encodeURIComponent(slug)}`, { cache: "no-store" });
-      if (!r.ok) throw new Error("Not found");
-      const data = await r.json();
-      iframe.src = data.embed || DEFAULT_EMBED;
-    } catch (e) {
-      iframe.src = DEFAULT_EMBED;
-    }
-  }
-
-  load();
-</script>
+    // attendre que le DOM soit prêt
+    window.addEventListener("DOMContentLoaded", load);
+  </script>
+</body>
+</html>
