@@ -1,19 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Viewing Room H.D Galerie</title>
+
+<style>
+html, body {
+  height: 100%;
+  margin: 0;
+  background: #fff;
+}
+
+iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+</style>
+
+</head>
+
+<body>
+
+<iframe id="vr" allowfullscreen></iframe>
+
 <script>
 
-// Fallback (homepage viewing room)
+// Homepage fallback
 const DEFAULT_EMBED = "https://airtable.com/embed/appd2uoTfbBeo9vI1U/shrGj2FnVG7XsgZ7X";
 
 function getSlug() {
 
   const params = new URLSearchParams(window.location.search);
 
-  // 1️⃣ Ancien système : ?path=slug
   const pathParam = params.get("path");
   if (pathParam) {
     return decodeURIComponent(pathParam).trim().toLowerCase();
   }
 
-  // 2️⃣ Route normale : /slug
   const path = window.location.pathname
     .replace(/^\/+|\/$/g, "")
     .trim()
@@ -30,7 +56,6 @@ async function load() {
 
   if (!iframe) return;
 
-  // 3️⃣ Mode embed direct (ancien système)
   if (embedParam) {
     iframe.src = decodeURIComponent(embedParam);
     return;
@@ -38,13 +63,11 @@ async function load() {
 
   const slug = getSlug();
 
-  // 4️⃣ Homepage = fallback
   if (!slug) {
     iframe.src = DEFAULT_EMBED;
     return;
   }
 
-  // 5️⃣ Chargement slug via API
   try {
 
     const res = await fetch(`/api/resolve?slug=${encodeURIComponent(slug)}`, {
@@ -57,14 +80,15 @@ async function load() {
 
     iframe.src = data.embed || DEFAULT_EMBED;
 
-  } catch (e) {
-
+  } catch {
     iframe.src = DEFAULT_EMBED;
-
   }
+
 }
 
-// IMPORTANT → évite les pages blanches
 load();
 
 </script>
+
+</body>
+</html>
