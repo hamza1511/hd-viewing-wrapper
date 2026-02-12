@@ -1,14 +1,16 @@
 {
-  "redirects": [
+  "routes": [
     {
-      "source": "/amelie-challeat",
-      "destination": "/?slug=selection-amelie-challeat-oeuvres-unique-rizz",
-      "permanent": true
+      "src": "/barak",
+      "dest": "/?embed=https://airtable.com/embed/appd2uoTfbeo9v1IU/shrsySwVZGp1IOZgS"
     },
     {
-      "source": "/camille-bizot",
-      "destination": "/?slug=selection-camille-bizot-oeuvres-unique-xavier-de-vilmorin-rizz",
-      "permanent": true
+      "src": "/camille",
+      "dest": "/?embed=https://airtable.com/embed/appd2uoTfbeo9v1IU/shrNiMg31yXWRRYJc"
+    },
+    {
+      "src": "/amelie",
+      "dest": "/?embed=https://airtable.com/embed/appd2uoTfbeo9v1IU/shr9g7bDAI8fSybpc"
     }
   ]
 }
