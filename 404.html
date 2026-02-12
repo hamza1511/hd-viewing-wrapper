@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>H.D Galerie — Viewing Room</title>
+</head>
+<body>
+<script>
+  // Redirect "/slug" -> "/?path=slug"
+  var path = window.location.pathname.replace(/^\/+|\/+$/g, "");
+  var target = "/?path=" + encodeURIComponent(path) + window.location.search + window.location.hash;
+  window.location.replace(target);
+</script>
+</body>
+</html>
