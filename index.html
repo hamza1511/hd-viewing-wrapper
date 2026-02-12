@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8" />
+<meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Viewing Room H.D Galerie</title>
 
@@ -19,7 +19,6 @@ iframe {
   display: block;
 }
 </style>
-
 </head>
 
 <body>
@@ -28,34 +27,37 @@ iframe {
 
 <script>
 
-// Homepage fallback
-const DEFAULT_EMBED = "https://airtable.com/embed/appd2uoTfbBeo9vI1U/shrGj2FnVG7XsgZ7X";
+// 👉 Viewing room par défaut (HD Galerie)
+const DEFAULT_EMBED = "https://airtable.com/embed/appd2uoTfbeo9v1IU/shrGj2FnVG7XsgZ7X";
 
 function getSlug() {
 
   const params = new URLSearchParams(window.location.search);
 
+  // ancien système ?path=
   const pathParam = params.get("path");
   if (pathParam) {
     return decodeURIComponent(pathParam).trim().toLowerCase();
   }
 
+  // nouveau système /slug
   const path = window.location.pathname
-    .replace(/^\/+|\/$/g, "")
+    .replace(/^\/+|\/+$/g, "")
     .trim()
     .toLowerCase();
 
   return path || null;
 }
 
-async function load() {
+async function loadViewingRoom() {
 
-  const params = new URLSearchParams(window.location.search);
-  const embedParam = params.get("embed");
   const iframe = document.getElementById("vr");
-
   if (!iframe) return;
 
+  const params = new URLSearchParams(window.location.search);
+
+  // support embed direct (ancien système)
+  const embedParam = params.get("embed");
   if (embedParam) {
     iframe.src = decodeURIComponent(embedParam);
     return;
@@ -63,6 +65,7 @@ async function load() {
 
   const slug = getSlug();
 
+  // 👉 Si homepage → afficher HD Galerie
   if (!slug) {
     iframe.src = DEFAULT_EMBED;
     return;
@@ -80,13 +83,14 @@ async function load() {
 
     iframe.src = data.embed || DEFAULT_EMBED;
 
-  } catch {
+  } catch (e) {
+
+    // fallback sécurité
     iframe.src = DEFAULT_EMBED;
   }
-
 }
 
-load();
+document.addEventListener("DOMContentLoaded", loadViewingRoom);
 
 </script>
 
