@@ -1,37 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-<meta charset="UTF-8">
-<title>H.D Galerie Viewing Room</title>
+  <head>
+    <meta charset="UTF-8" />
+    <title>H.D Galerie Viewing Room</title>
+    <style>
+      html, body { margin:0; height:100%; background:#fff; }
+      iframe { border:0; width:100%; height:100vh; }
+    </style>
+  </head>
 
-<style>
-html, body {
-  margin: 0;
-  height: 100%;
-  background: white;
-}
+  <body>
+    <iframe id="airtableFrame"></iframe>
 
-iframe {
-  border: none;
-  width: 100%;
-  height: 100vh;
-}
-</style>
-</head>
+    <script>
+      const params = new URLSearchParams(window.location.search);
 
-<body>
+      // on accepte ?embed= (recommandé) ou ?airtable= (si tu gardes ce nom)
+      const embedParam = params.get("embed") || params.get("airtable");
 
-<iframe id="airtableFrame"></iframe>
+      // ⚠️ fallback (au cas où) : mets TON embed principal si tu veux
+      const fallbackEmbed = "https://airtable.com/embed/appd2uoTfbeo9v1IU/shrNiMg31yXWRRYJc";
 
-<script>
-const params = new URLSearchParams(window.location.search);
-const slug = params.get("slug");
+      const iframe = document.getElementById("airtableFrame");
 
-const base = "https://airtable.com/embed/appd2uoTfbeo9v1IU/shrNiMg31yXWRRYJc";
+      // si Airtable a encodé l'URL (via ENCODE_URL_COMPONENT), on la décode ici
+      const embedUrl = embedParam ? decodeURIComponent(embedParam) : fallbackEmbed;
 
-document.getElementById("airtableFrame").src =
-  base + (slug ? ("?slug=" + encodeURIComponent(slug)) : "");
-</script>
-
-</body>
+      iframe.src = embedUrl;
+    </script>
+  </body>
 </html>
