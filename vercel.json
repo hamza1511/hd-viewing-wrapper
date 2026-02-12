@@ -1,9 +1,39 @@
-{
-  "redirects": [
-    {
-      "source": "/amelie-challeat",
-      "destination": "https://airtable.com/appd2uoTfbeo9v1IU/shr9g7bDAI8fSybpc",
-      "permanent": true
-    }
-  ]
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>H.D Galerie Viewing Room</title>
+
+<style>
+html, body {
+  margin: 0;
+  height: 100%;
+  background: white;
 }
+
+iframe {
+  border: none;
+  width: 100%;
+  height: 100vh;
+}
+</style>
+</head>
+
+<body>
+
+<iframe id="airtableFrame"></iframe>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const slug = params.get("slug");
+
+/* TON EMBED OFFICIEL */
+const base = "https://airtable.com/embed/appd2uoTfbeo9v1IU/shrNiMg31yXWRRYJc";
+
+/* Ajoute slug si présent */
+document.getElementById("airtableFrame").src =
+  base + (slug ? ("?slug=" + encodeURIComponent(slug)) : "");
+</script>
+
+</body>
+</html>
