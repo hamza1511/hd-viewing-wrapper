@@ -1,11 +1,11 @@
-<!doctyp<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>H.D Galerie — Viewing Room</title>
   <style>
-    html, body { height: 100%; margin: 0; }
+    html, body { height: 100%; margin: 0; background: #fff; }
     iframe { width: 100%; height: 100%; border: 0; }
   </style>
 </head>
@@ -14,24 +14,28 @@
   <iframe id="vr" allowfullscreen></iframe>
 
   <script>
-    const DEFAULT_EMBED =
-      "https://airtable.com/embed/appd2uoTfbeo9v1IU/shrGj2FnVG7XsgZ7X";
+    // 1) Your default viewing (fallback)
+    const DEFAULT_EMBED = "https://airtable.com/embed/appd2uoTfbeo9v1IU/shrGj2FnVG7XsgZ7X";
 
+    // 2) Read URL params
     const params = new URLSearchParams(window.location.search);
-    const embed = params.get("embed");
+    const embedParam = params.get("embed");
+    const pathParam = params.get("path"); // comes from 404.html redirect
 
-    // 1) Choose embed URL
-    const embedUrl = embed ? decodeURIComponent(embed) : DEFAULT_EMBED;
+    // 3) If embed is explicitly provided, always use it
+    if (embedParam) {
+      document.getElementById("vr").src = decodeURIComponent(embedParam);
+    } else {
+      // 4) If we have a slug in ?path=, convert it into your Airtable embed link using a lookup table in Airtable later.
+      // For now, we just load DEFAULT to avoid 404.
+      // Next step: we'll connect this to your Airtable "Viewing Room" table (Slug -> Viewing room URL Airtable).
+      document.getElementById("vr").src = DEFAULT_EMBED;
 
-    // 2) If no embed param, set it (without redirect)
-    if (!embed) {
+      // Keep the URL clean/stable by setting embed param (no redirect)
       const newParams = new URLSearchParams();
       newParams.set("embed", encodeURIComponent(DEFAULT_EMBED));
-      window.history.replaceState({}, "", "?" + newParams.toString());
+      window.history.replaceState({}, "", "/?" + newParams.toString());
     }
-
-    // 3) Load iframe
-    document.getElementById("vr").src = embedUrl;
   </script>
 </body>
 </html>
