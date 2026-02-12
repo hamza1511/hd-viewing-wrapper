@@ -1,32 +1,14 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>H.D Galerie Viewing Room</title>
-    <style>
-      html, body { margin:0; height:100%; background:#fff; }
-      iframe { border:0; width:100%; height:100vh; }
-    </style>
-  </head>
+<head>
+<meta charset="UTF-8">
+<title>Viewing Room</title>
 
-  <body>
-    <iframe id="airtableFrame"></iframe>
+<script>
+window.location.href = "https://viewing.hdgalerie.fr/?embed=https%3A%2F%2Fairtable.com%2Fembed%2Fappd2uoTfbeo9v1IU%2FshrGj2FnVG7XsgZ7X";
+</script>
 
-    <script>
-      const params = new URLSearchParams(window.location.search);
-
-      // on accepte ?embed= (recommandé) ou ?airtable= (si tu gardes ce nom)
-      const embedParam = params.get("embed") || params.get("airtable");
-
-      // ⚠️ fallback (au cas où) : mets TON embed principal si tu veux
-      const fallbackEmbed = "https://airtable.com/embed/appd2uoTfbeo9v1IU/shrNiMg31yXWRRYJc";
-
-      const iframe = document.getElementById("airtableFrame");
-
-      // si Airtable a encodé l'URL (via ENCODE_URL_COMPONENT), on la décode ici
-      const embedUrl = embedParam ? decodeURIComponent(embedParam) : fallbackEmbed;
-
-      iframe.src = embedUrl;
-    </script>
-  </body>
+</head>
+<body>
+</body>
 </html>
