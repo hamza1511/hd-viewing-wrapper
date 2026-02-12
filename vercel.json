@@ -1,3 +1,14 @@
 {
-  "cleanUrls": true
+  "redirects": [
+    {
+      "source": "/amelie-challeat",
+      "destination": "/?slug=selection-amelie-challeat-oeuvres-unique-rizz",
+      "permanent": true
+    },
+    {
+      "source": "/camille-bizot",
+      "destination": "/?slug=selection-camille-bizot-oeuvres-unique-xavier-de-vilmorin-rizz",
+      "permanent": true
+    }
+  ]
 }
