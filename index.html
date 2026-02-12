@@ -1,41 +1,45 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>H.D Galerie — Viewing Room</title>
-  <style>
-    html, body { height: 100%; margin: 0; background: #fff; }
-    iframe { width: 100%; height: 100%; border: 0; }
-  </style>
-</head>
+<script>
+  // Fallback (homepage viewing room)
+  const DEFAULT_EMBED = "https://airtable.com/embed/appd2uoTfbeo9v1IU/shrGj2FnVG7XsgZ7XsgZ7X";
 
-<body>
-  <iframe id="vr" allowfullscreen></iframe>
+  function getSlug() {
+    // 1) If coming from 404.html redirect: ?path=slug
+    const params = new URLSearchParams(window.location.search);
+    const pathParam = params.get("path");
+    if (pathParam) return decodeURIComponent(pathParam).trim().toLowerCase();
 
-  <script>
-    // 1) Your default viewing (fallback)
-    const DEFAULT_EMBED = "https://airtable.com/embed/appd2uoTfbeo9v1IU/shrGj2FnVG7XsgZ7X";
+    // 2) Normal route: /slug
+    return window.location.pathname.replace(/^\/+|\/+$/g, "").trim().toLowerCase();
+  }
 
-    // 2) Read URL params
+  async function load() {
     const params = new URLSearchParams(window.location.search);
     const embedParam = params.get("embed");
-    const pathParam = params.get("path"); // comes from 404.html redirect
+    const iframe = document.getElementById("vr");
 
-    // 3) If embed is explicitly provided, always use it
+    // If explicit embed is provided, always use it
     if (embedParam) {
-      document.getElementById("vr").src = decodeURIComponent(embedParam);
-    } else {
-      // 4) If we have a slug in ?path=, convert it into your Airtable embed link using a lookup table in Airtable later.
-      // For now, we just load DEFAULT to avoid 404.
-      // Next step: we'll connect this to your Airtable "Viewing Room" table (Slug -> Viewing room URL Airtable).
-      document.getElementById("vr").src = DEFAULT_EMBED;
-
-      // Keep the URL clean/stable by setting embed param (no redirect)
-      const newParams = new URLSearchParams();
-      newParams.set("embed", encodeURIComponent(DEFAULT_EMBED));
-      window.history.replaceState({}, "", "/?" + newParams.toString());
+      iframe.src = decodeURIComponent(embedParam);
+      return;
     }
-  </script>
-</body>
-</html>
+
+    const slug = getSlug();
+
+    // No slug -> default
+    if (!slug) {
+      iframe.src = DEFAULT_EMBED;
+      return;
+    }
+
+    try {
+      const r = await fetch(`/api/resolve?slug=${encodeURIComponent(slug)}`, { cache: "no-store" });
+      if (!r.ok) throw new Error("Not found");
+      const data = await r.json();
+      iframe.src = data.embed || DEFAULT_EMBED;
+    } catch (e) {
+      iframe.src = DEFAULT_EMBED;
+    }
+  }
+
+  load();
+</script>
